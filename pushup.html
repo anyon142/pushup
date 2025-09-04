@@ -1,213 +1,485 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حل مشكلة HTTPS للكاميرا</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            max-width: 800px;
-            width: 100%;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #1a2a6c;
-            margin-bottom: 15px;
-            font-size: 2.2rem;
-        }
-        
-        .problem-section {
-            background: #ffedcc;
-            border-right: 5px solid #ff9900;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
-        
-        .solutions-section {
-            margin-bottom: 25px;
-        }
-        
-        .solution-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-        
-        .solution-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .solution-card h3 {
-            color: #1a2a6c;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .solution-card h3 span {
-            margin-left: 10px;
-        }
-        
-        .icon {
-            font-size: 24px;
-            margin-left: 10px;
-        }
-        
-        .localhost { color: #4CAF50; }
-        .services { color: #2196F3; }
-        .server { color: #FF5722; }
-        
-        .code-block {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .steps {
-            padding-right: 20px;
-            margin: 15px 0;
-        }
-        
-        .steps li {
-            margin-bottom: 10px;
-        }
-        
-        .button {
-            display: inline-block;
-            background: #1a2a6c;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-        
-        .button:hover {
-            background: #2a3a8c;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>عداد تمارين الضغط والقرفصاء</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@2.2.2"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 0.5em;
+      color: #007bff;
+    }
+    .container {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      max-width: 800px;
+      width: 100%;
+      margin: 10px;
+    }
+    #video {
+      width: 100%;
+      max-width: 640px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      border-radius: 10px;
+    }
+    .overlay {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      margin: 20px 0;
+      display: none;
+    }
+    #repCounter {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #007bff;
+      margin-top: 10px;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin: 5px;
+      min-width: 120px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #28a745;
+    }
+    #sessionSummary, #restartBtn, #startBtn, #stopBtn {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+    #stopBtn {
+      background-color: #dc3545;
+    }
+    #stopBtn:hover {
+      background-color: #c82333;
+    }
+    #startBtn, #restartBtn {
+      margin-top: 10px;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #loading {
+      font-size: 1.2rem;
+      color: #666;
+      margin: 15px 0;
+    }
+    #errorMsg {
+      color: #dc3545;
+      margin: 20px;
+      padding: 10px;
+      background: #f8d7da;
+      border-radius: 5px;
+      display: none;
+    }
+    .exercise-selector {
+      margin: 15px 0;
+    }
+    .exercise-btn {
+      background-color: #6c757d;
+    }
+    .exercise-btn.active {
+      background-color: #007bff;
+    }
+    .instructions {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      text-align: right;
+    }
+    .instructions h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>حل مشكلة HTTPS للوصول إلى الكاميرا</h1>
-            <p>التطبيق يتطلب اتصالاً آمناً (HTTPS) للوصول إلى الكاميرا</p>
-        </header>
-        
-        <section class="problem-section">
-            <h2>المشكلة:</h2>
-            <p>متصفحات الويب الحديثة تطلب اتصالاً آمناً (HTTPS) للسماح للتطبيقات بالوصول إلى الكاميرا. هذا إجراء أمني لحماية خصوصيتك.</p>
-        </section>
-        
-        <section class="solutions-section">
-            <h2>الحلول المتاحة:</h2>
-            
-            <div class="solution-card">
-                <h3><span class="icon localhost">📁</span><span>الحل الأول: التشغيل على localhost</span></h3>
-                <p>يمكنك تشغيل التطبيق محلياً على جهازك باستخدام localhost:</p>
-                <ol class="steps">
-                    <li>احفظ ملف HTML على جهازك</li>
-                    <li>افتح terminal أو命令提示符</li>
-                    <li>انتقل إلى المجلد الذي يحتوي على الملف</li>
-                    <li>شغّل خادم محلي باستخدام Python:</li>
-                </ol>
-                <div class="code-block">python -m http.server 8000</div>
-                <p>ثم اذهب إلى المتصبع وافتح <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></p>
-            </div>
-            
-            <div class="solution-card">
-                <h3><span class="icon services">🌐</span><span>الحل الثاني: استخدام خدمات استضافة مجانية</span></h3>
-                <p>يمكنك استخدام إحدى خدمات الاستضافة المجانية التي تدعم HTTPS:</p>
-                <ul class="steps">
-                    <li><a href="https://pages.github.com/" target="_blank">GitHub Pages</a> - استضافة مجانية للمشاريع مفتوحة المصدر</li>
-                    <li><a href="https://vercel.com/" target="_blank">Vercel</a> - نشر سهل مع دعم HTTPS تلقائي</li>
-                    <li><a href="https://www.netlify.com/" target="_blank">Netlify</a> - استضافة مع HTTPS مجاني</li>
-                    <li><a href="https://firebase.google.com/docs/hosting" target="_blank">Firebase Hosting</a> - استضافة من جوجل مع HTTPS</li>
-                </ul>
-            </div>
-            
-            <div class="solution-card">
-                <h3><span class="icon server">🔒</span><span>الحل الثالث: استخدام HTTPS على الخادم الخاص</span></h3>
-                <p>إذا كان لديك خادم خاص، يمكنك تفعيل HTTPS باستخدام:</p>
-                <ul class="steps">
-                    <li><a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> - شهادات SSL مجانية</li>
-                    <li>شراء شهادة SSL من موفر الاستضافة</li>
-                    <li>استخدام Cloudflare للحصول على HTTPS مجاني</li>
-                </ul>
-            </div>
-        </section>
-        
-        <section>
-            <h2>جرب التطبيق الآن:</h2>
-            <p>بعد تطبيق أحد الحلول أعلاه، يمكنك استخدام التطبيق:</p>
-            <a class="button" href="javascript:void(0)" onclick="alert('يرجى استخدام أحد الحلول المذكورة أعلاه لتفعيل HTTPS ثم جرب التطبيق')">تجربة التطبيق</a>
-        </section>
-        
-        <footer>
-            <p>© 2023 تطبيق عداد تمارين اللياقة البدنية | تم التطوير لحماية خصوصيتك</p>
-        </footer>
+  <div class="container">
+    <h1>عداد تمارين اللياقة البدنية</h1>
+    <p>استخدم كاميرا هاتفك الأمامية لعد تمارين الضغط والقرفصاء في الوقت الحقيقي باستخدام الذكاء الاصطناعي!</p>
+    
+    <div class="exercise-selector">
+      <button id="pushupBtn" class="exercise-btn active" onclick="selectExercise('pushup')">تمارين الضغط</button>
+      <button id="squatBtn" class="exercise-btn" onclick="selectExercise('squat')">تمارين القرفصاء</button>
     </div>
+    
+    <div class="instructions">
+      <h3>تعليمات الاستخدام:</h3>
+      <p id="exerciseInstructions">لتمارين الضغط: تأكد من أن كامل جسمك مرئي في الكاميرا. قم بأداء تمارين الضغط بشكل كامل مع الحفاظ على استقامة ظهرك.</p>
+    </div>
+    
+    <div id="loading">جاري تحميل نموذج الذكاء الاصطناعي...</div>
+    <div id="errorMsg"></div>
+    
+    <button id="startBtn" onclick="startApp()">بدء الكاميرا والعد</button>
+    <button id="stopBtn" onclick="stopApp()" style="display: none;">إيقاف التمرين</button>
+    
+    <div class="overlay">
+      <video id="video" autoplay playsinline></video>
+      <canvas id="canvas"></canvas>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-box">
+        <div>عدد التكرارات</div>
+        <div id="repCounter" class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div>الرقم القياسي</div>
+        <div id="highestScore" class="stat-value">0</div>
+      </div>
+    </div>
+    
+    <div id="sessionSummary" style="display: none;"></div>
+    <button id="restartBtn" onclick="restartSession()" style="display: none;">بدء جلسة جديدة</button>
+  </div>
 
-    <script>
-        // يمكن إضافة أي JavaScript ضروري هنا
-    </script>
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const repCounter = document.getElementById('repCounter');
+    const highestScoreEl = document.getElementById('highestScore');
+    const sessionSummary = document.getElementById('sessionSummary');
+    const restartBtn = document.getElementById('restartBtn');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const loading = document.getElementById('loading');
+    const errorMsg = document.getElementById('errorMsg');
+    const overlay = document.querySelector('.overlay');
+    const pushupBtn = document.getElementById('pushupBtn');
+    const squatBtn = document.getElementById('squatBtn');
+    const exerciseInstructions = document.getElementById('exerciseInstructions');
+
+    let net;
+    let isActive = false;
+    let repCount = 0;
+    let highestScore = parseInt(localStorage.getItem('highestScore') || '0');
+    let isDown = false;
+    let isUp = true;
+    let isModelLoaded = false;
+    let videoStream = null;
+    let currentExercise = 'pushup';
+    let calibrationDone = false;
+    let initialNoseY = 0;
+    let initialHipY = 0;
+
+    // تحديث أعلى درجة
+    highestScoreEl.textContent = highestScore;
+
+    // تحميل نموذج PoseNet
+    async function loadModel() {
+      try {
+        console.log('جاري تحميل نموذج PoseNet...');
+        net = await posenet.load({
+          architecture: 'MobileNetV1',
+          outputStride: 16,
+          inputResolution: { width: 640, height: 480 },
+          multiplier: 0.75
+        });
+        isModelLoaded = true;
+        loading.textContent = 'تم تحميل النموذج بنجاح! انقر على "بدء" للبدء.';
+        console.log('تم تحميل نموذج PoseNet.');
+      } catch (e) {
+        console.error('فشل تحميل النموذج:', e);
+        errorMsg.textContent = 'فشل في تحميل نموذج الذكاء الاصطناعي. تحقق من اتصالك بالإنترنت وقم بإعادة تحميل الصفحة.';
+        errorMsg.style.display = 'block';
+        loading.style.display = 'none';
+      }
+    }
+
+    // اختيار نوع التمرين
+    function selectExercise(exercise) {
+      currentExercise = exercise;
+      
+      // تحديث واجهة المستخدم
+      pushupBtn.classList.remove('active');
+      squatBtn.classList.remove('active');
+      
+      if (exercise === 'pushup') {
+        pushupBtn.classList.add('active');
+        exerciseInstructions.textContent = 'لتمارين الضغط: تأكد من أن كامل جسمك مرئي في الكاميرا. قم بأداء تمارين الضغط بشكل كامل مع الحفاظ على استقامة ظهرك.';
+      } else {
+        squatBtn.classList.add('active');
+        exerciseInstructions.textContent = 'لتمارين القرفصاء: قف بشكل كامل أمام الكاميرا مع إبقاء قدميك متباعدتين بمقدار عرض الكتفين. اخفض جسمك كما لو كنت تجلس على كرسي.';
+      }
+      
+      // إعادة تعيين المعايرة
+      calibrationDone = false;
+    }
+
+    // بدء التطبيق: طلب الكاميرا وبدء الكشف
+    async function startApp() {
+      if (!isModelLoaded) {
+        alert('لم يتم تحميل نموذج الذكاء الاصطناعي بعد. يرجى الانتظار.');
+        return;
+      }
+
+      try {
+        console.log('طلب الوصول إلى الكاميرا...');
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: 640, height: 480 }  // الكاميرا الأمامية
+        });
+        videoStream = stream;
+        video.srcObject = stream;
+        video.addEventListener('loadedmetadata', () => {
+          console.log('تم تحميل بيانات الفيديو. الأبعاد:', video.videoWidth, video.videoHeight);
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          video.style.display = 'block';
+          overlay.style.display = 'block';
+          startBtn.style.display = 'none';
+          stopBtn.style.display = 'inline-block';
+          loading.style.display = 'none';
+          detectPose();
+          isActive = true;
+        });
+        video.load();
+      } catch (err) {
+        console.error('فشل الوصول إلى الكاميرا:', err);
+        errorMsg.textContent = 'تم رفض الوصول إلى الكاميرا أو غير مدعوم. يرجى السماح بأذونات الكاميرا والتأكد من أنك تستخدم HTTPS.';
+        errorMsg.style.display = 'block';
+        startBtn.textContent = 'إعادة محاولة الكاميرا';
+      }
+    }
+
+    // إيقاف التطبيق
+    function stopApp() {
+      endSession();
+      stopBtn.style.display = 'none';
+      startBtn.style.display = 'block';
+    }
+
+    // الكشف عن الوضعية ومعالجتها
+    async function detectPose() {
+      if (!isActive || !net) return;
+      try {
+        const pose = await net.estimateSinglePose(video, { flipHorizontal: false });
+        drawKeypoints(pose);
+        countReps(pose);
+      } catch (e) {
+        console.error('خطأ في تقدير الوضعية:', e);
+      }
+      if (isActive) requestAnimationFrame(detectPose);
+    }
+
+    // رسم الهيكل العظمي للتغذية الراجعة
+    function drawKeypoints(pose) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+
+      const drawLine = (k1, k2) => {
+        if (k1 && k2 && k1.score > 0.5 && k2.score > 0.5) {
+          ctx.beginPath();
+          ctx.moveTo(k1.position.x, k1.position.y);
+          ctx.lineTo(k2.position.x, k2.position.y);
+          ctx.stroke();
+        }
+      };
+
+      pose.keypoints.forEach(kp => {
+        if (kp.score > 0.5) {
+          ctx.fillStyle = 'red';
+          ctx.beginPath();
+          ctx.arc(kp.position.x, kp.position.y, 5, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      });
+
+      // رسم الخطوط الرئيسية للجسم
+      const keypoints = pose.keypoints.reduce((acc, kp) => ({ ...acc, [kp.part]: kp }), {});
+      drawLine(keypoints.leftShoulder, keypoints.rightShoulder);
+      drawLine(keypoints.leftShoulder, keypoints.leftElbow);
+      drawLine(keypoints.rightShoulder, keypoints.rightElbow);
+      drawLine(keypoints.leftElbow, keypoints.leftWrist);
+      drawLine(keypoints.rightElbow, keypoints.rightWrist);
+      drawLine(keypoints.leftShoulder, keypoints.leftHip);
+      drawLine(keypoints.rightShoulder, keypoints.rightHip);
+      drawLine(keypoints.rightHip, keypoints.rightKnee);
+      drawLine(keypoints.leftHip, keypoints.leftKnee);
+      drawLine(keypoints.rightKnee, keypoints.rightAnkle);
+      drawLine(keypoints.leftKnee, keypoints.leftAnkle);
+    }
+
+    // معايرة المواضع الأولية
+    function calibratePositions(pose) {
+      const nose = pose.keypoints.find(kp => kp.part === 'nose');
+      const leftHip = pose.keypoints.find(kp => kp.part === 'leftHip');
+      const rightHip = pose.keypoints.find(kp => kp.part === 'rightHip');
+
+      if (nose && nose.score > 0.5 && leftHip && leftHip.score > 0.5 && rightHip && rightHip.score > 0.5) {
+        initialNoseY = nose.position.y;
+        initialHipY = (leftHip.position.y + rightHip.position.y) / 2;
+        calibrationDone = true;
+        console.log('تمت المعايرة: initialNoseY=', initialNoseY, 'initialHipY=', initialHipY);
+      }
+    }
+
+    // منطق عد التكرارات للضغط والقرفصاء
+    function countReps(pose) {
+      if (!calibrationDone) {
+        calibratePositions(pose);
+        return;
+      }
+
+      const nose = pose.keypoints.find(kp => kp.part === 'nose');
+      const leftShoulder = pose.keypoints.find(kp => kp.part === 'leftShoulder');
+      const rightShoulder = pose.keypoints.find(kp => kp.part === 'rightShoulder');
+      const leftHip = pose.keypoints.find(kp => kp.part === 'leftHip');
+      const rightHip = pose.keypoints.find(kp => kp.part === 'rightHip');
+      const leftKnee = pose.keypoints.find(kp => kp.part === 'leftKnee');
+      const rightKnee = pose.keypoints.find(kp => kp.part === 'rightKnee');
+
+      if (!nose || nose.score < 0.5) return;
+
+      if (currentExercise === 'pushup') {
+        // كشف تمارين الضغط
+        if (!leftShoulder || leftShoulder.score < 0.5 || !rightShoulder || rightShoulder.score < 0.5) return;
+        
+        const shoulderY = (leftShoulder.position.y + rightShoulder.position.y) / 2;
+        const downThreshold = shoulderY + (initialHipY - shoulderY) * 0.6;
+        const upThreshold = shoulderY + (initialHipY - shoulderY) * 0.3;
+
+        if (nose.position.y > downThreshold && !isDown) {
+          isDown = true;
+          isUp = false;
+        } else if (nose.position.y < upThreshold && isDown) {
+          isDown = false;
+          isUp = true;
+          repCount++;
+          repCounter.textContent = repCount;
+        }
+      } else {
+        // كشف تمارين القرفصاء
+        if (!leftHip || leftHip.score < 0.5 || !rightHip || rightHip.score < 0.5) return;
+        
+        const hipY = (leftHip.position.y + rightHip.position.y) / 2;
+        
+        if (leftKnee && rightKnee && leftKnee.score > 0.5 && rightKnee.score > 0.5) {
+          const kneeY = (leftKnee.position.y + rightKnee.position.y) / 2;
+          const downThreshold = kneeY - 30;
+          const upThreshold = initialHipY - 50;
+
+          if (hipY > downThreshold && !isDown) {
+            isDown = true;
+            isUp = false;
+          } else if (hipY < upThreshold && isDown) {
+            isDown = false;
+            isUp = true;
+            repCount++;
+            repCounter.textContent = repCount;
+          }
+        }
+      }
+    }
+
+    // إنهاء الجلسة
+    function endSession() {
+      if (repCount > highestScore) {
+        highestScore = repCount;
+        localStorage.setItem('highestScore', highestScore);
+        highestScoreEl.textContent = highestScore;
+      }
+      
+      sessionSummary.innerHTML = `
+        <h3>ملخص الجلسة:</h3>
+        <p>عدد التكرارات: <strong>${repCount}</strong></p>
+        <p>الرقم القياسي: <strong>${highestScore}</strong></p>
+      `;
+      sessionSummary.style.display = 'block';
+      restartBtn.style.display = 'block';
+      isActive = false;
+      calibrationDone = false;
+      
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+      }
+    }
+
+    // إعادة تشغيل الجلسة
+    function restartSession() {
+      repCount = 0;
+      repCounter.textContent = '0';
+      sessionSummary.style.display = 'none';
+      restartBtn.style.display = 'none';
+      startBtn.style.display = 'block';
+      stopBtn.style.display = 'none';
+      overlay.style.display = 'none';
+      isActive = false;
+      isDown = false;
+      isUp = true;
+      calibrationDone = false;
+    }
+
+    // التعامل مع إغلاق الصفحة
+    window.addEventListener('beforeunload', () => {
+      if (isActive) {
+        endSession();
+      }
+    });
+
+    // تحميل النموذج عند تحميل الصفحة
+    loadModel();
+
+    // التحقق من HTTPS
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      errorMsg.textContent = 'هذا التطبيق يتطلب HTTPS للوصول إلى الكاميرا. يرجى الاستضافة على خادم آمن أو استخدام localhost.';
+      errorMsg.style.display = 'block';
+      startBtn.disabled = true;
+    }
+  </script>
 </body>
 </html>
