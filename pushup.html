@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حل مشكلة HTTPS للكاميرا</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+        
+        .problem-section {
+            background: #ffedcc;
+            border-right: 5px solid #ff9900;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .solutions-section {
+            margin-bottom: 25px;
+        }
+        
+        .solution-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .solution-card h3 {
+            color: #1a2a6c;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .solution-card h3 span {
+            margin-left: 10px;
+        }
+        
+        .icon {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .localhost { color: #4CAF50; }
+        .services { color: #2196F3; }
+        .server { color: #FF5722; }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .steps {
+            padding-right: 20px;
+            margin: 15px 0;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+        }
+        
+        .button {
+            display: inline-block;
+            background: #1a2a6c;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        
+        .button:hover {
+            background: #2a3a8c;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>حل مشكلة HTTPS للوصول إلى الكاميرا</h1>
+            <p>التطبيق يتطلب اتصالاً آمناً (HTTPS) للوصول إلى الكاميرا</p>
+        </header>
+        
+        <section class="problem-section">
+            <h2>المشكلة:</h2>
+            <p>متصفحات الويب الحديثة تطلب اتصالاً آمناً (HTTPS) للسماح للتطبيقات بالوصول إلى الكاميرا. هذا إجراء أمني لحماية خصوصيتك.</p>
+        </section>
+        
+        <section class="solutions-section">
+            <h2>الحلول المتاحة:</h2>
+            
+            <div class="solution-card">
+                <h3><span class="icon localhost">📁</span><span>الحل الأول: التشغيل على localhost</span></h3>
+                <p>يمكنك تشغيل التطبيق محلياً على جهازك باستخدام localhost:</p>
+                <ol class="steps">
+                    <li>احفظ ملف HTML على جهازك</li>
+                    <li>افتح terminal أو命令提示符</li>
+                    <li>انتقل إلى المجلد الذي يحتوي على الملف</li>
+                    <li>شغّل خادم محلي باستخدام Python:</li>
+                </ol>
+                <div class="code-block">python -m http.server 8000</div>
+                <p>ثم اذهب إلى المتصبع وافتح <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></p>
+            </div>
+            
+            <div class="solution-card">
+                <h3><span class="icon services">🌐</span><span>الحل الثاني: استخدام خدمات استضافة مجانية</span></h3>
+                <p>يمكنك استخدام إحدى خدمات الاستضافة المجانية التي تدعم HTTPS:</p>
+                <ul class="steps">
+                    <li><a href="https://pages.github.com/" target="_blank">GitHub Pages</a> - استضافة مجانية للمشاريع مفتوحة المصدر</li>
+                    <li><a href="https://vercel.com/" target="_blank">Vercel</a> - نشر سهل مع دعم HTTPS تلقائي</li>
+                    <li><a href="https://www.netlify.com/" target="_blank">Netlify</a> - استضافة مع HTTPS مجاني</li>
+                    <li><a href="https://firebase.google.com/docs/hosting" target="_blank">Firebase Hosting</a> - استضافة من جوجل مع HTTPS</li>
+                </ul>
+            </div>
+            
+            <div class="solution-card">
+                <h3><span class="icon server">🔒</span><span>الحل الثالث: استخدام HTTPS على الخادم الخاص</span></h3>
+                <p>إذا كان لديك خادم خاص، يمكنك تفعيل HTTPS باستخدام:</p>
+                <ul class="steps">
+                    <li><a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> - شهادات SSL مجانية</li>
+                    <li>شراء شهادة SSL من موفر الاستضافة</li>
+                    <li>استخدام Cloudflare للحصول على HTTPS مجاني</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section>
+            <h2>جرب التطبيق الآن:</h2>
+            <p>بعد تطبيق أحد الحلول أعلاه، يمكنك استخدام التطبيق:</p>
+            <a class="button" href="javascript:void(0)" onclick="alert('يرجى استخدام أحد الحلول المذكورة أعلاه لتفعيل HTTPS ثم جرب التطبيق')">تجربة التطبيق</a>
+        </section>
+        
+        <footer>
+            <p>© 2023 تطبيق عداد تمارين اللياقة البدنية | تم التطوير لحماية خصوصيتك</p>
+        </footer>
+    </div>
+
+    <script>
+        // يمكن إضافة أي JavaScript ضروري هنا
+    </script>
+</body>
+</html>
